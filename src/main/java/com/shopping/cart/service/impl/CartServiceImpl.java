@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopping.cart.dao.impl.CartDao;
+import com.shopping.cart.dao.impl.CartItemDao;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.exception.CartNotAssociatedException;
-import com.shopping.cart.repository.CartItemRepository;
+import com.shopping.cart.exception.ProductDoesNotExistException;
 import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.CartService;
 
@@ -29,7 +30,7 @@ public class CartServiceImpl implements CartService {
 	CartDao cartDao;
 
 	@Autowired
-	CartItemRepository cartItemRepository;
+	CartItemDao cartItemDao;
 
 	@Autowired
 	ProductRepository productRepository;
@@ -46,25 +47,28 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public CartItem addItem(CartItem cartItem) {
-		System.out.println(cartItem.toString());
+	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException {
 		Optional<Cart> cart = cartDao.get(cartItem.getCart().getId());
 		Optional<Product> product = productRepository.findById(cartItem.getProduct().getId());
 		if (cart.isPresent() && product.isPresent()) {
 			cartItem.setCart(cart.get());
 			cartItem.setProduct(product.get());
+		} else if (!cart.isPresent()) {
+			throw new CartNotAssociatedException("User is not associated to cart or Requested cart is not present.");
+		} else {
+			throw new ProductDoesNotExistException("Requested product does not exist");
 		}
-		return cartItemRepository.save(cartItem);
+		return cartItemDao.save(cartItem);
 	}
 
 	@Override
 	public CartItem updateItem(CartItem cartItem) {
-		return cartItemRepository.save(cartItem);
+		return cartItemDao.update(cartItem);
 	}
 
 	@Override
 	public void deleteItem(Long itemId) {
-		cartItemRepository.deleteById(itemId);
+		cartItemDao.delete(itemId);
 	}
 
 }
