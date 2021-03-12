@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.shopping.cart.dao.Dao;
 import com.shopping.cart.entity.Cart;
@@ -14,6 +15,7 @@ import com.shopping.cart.repository.CartRepository;
  * @author Kusal
  *
  */
+@Component
 public class CartDao implements Dao<Cart> {
 
 	@Autowired

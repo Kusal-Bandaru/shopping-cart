@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * @author Kusal
@@ -30,6 +31,9 @@ public class Cart {
 
 	@OneToMany(mappedBy = "cart")
 	private Set<CartItem> cartItem;
+	
+	@Transient
+	private float totalPrice;
 
 	/**
 	 * @return the id
@@ -72,6 +76,14 @@ public class Cart {
 	public void setCartItem(Set<CartItem> cartItem) {
 		this.cartItem = cartItem;
 	}
+
+	/**
+	 * @return the totalPrice
+	 */
+	public float getTotalPrice() {
+		return this.getCartItem().stream().map(CartItem::getSubPrice).reduce(0f, Float::sum);
+	}
+
 
 	@Override
 	public String toString() {

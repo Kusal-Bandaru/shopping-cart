@@ -1,7 +1,6 @@
 package com.shopping.cart.service.impl;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -36,11 +35,11 @@ public class CartServiceImpl implements CartService {
 	ProductRepository productRepository;
 
 	@Override
-	public Set<CartItem> getCartItemList(Long cartId) throws CartNotAssociatedException {
+	public Cart getCartItemList(Long cartId) throws CartNotAssociatedException {
 		Optional<Cart> cartOptional = cartDao.get(cartId);
 		if (cartOptional.isPresent()) {
 			Cart cart = cartOptional.get();
-			return cart.getCartItem();
+			return cart;
 		} else {
 			throw new CartNotAssociatedException("User is not associated to cart or Requested cart is not present.");
 		}

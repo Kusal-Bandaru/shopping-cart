@@ -5,13 +5,14 @@ package com.shopping.cart.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import com.shopping.cart.constant.ResponseConstants;
+import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.exception.CartNotAssociatedException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
@@ -21,6 +22,7 @@ import com.shopping.cart.service.CartService;;
  * @author Kusal
  *
  */
+@Component
 public class CartHandler {
 
 	@Autowired
@@ -28,11 +30,11 @@ public class CartHandler {
 
 	public ResponseEntity<Map<String, Object>> getCartItemList(long cartId) {
 		Map<String, Object> responseMap = new HashMap<>();
-		Set<CartItem> cartItemList;
+		Cart cart;
 		try {
-			cartItemList = cartService.getCartItemList(cartId);
-			if (cartItemList != null && cartItemList.size() > 0) {
-				responseMap.put(ResponseConstants.RESPONSE, cartItemList);
+			cart = cartService.getCartItemList(cartId);
+			if (cart.getCartItem() != null && cart.getCartItem().size() > 0) {
+				responseMap.put(ResponseConstants.RESPONSE, cart);
 			} else {
 				responseMap.put(ResponseConstants.RESPONSE, ResponseConstants.EMPTY_CART);
 			}

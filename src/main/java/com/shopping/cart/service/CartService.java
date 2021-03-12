@@ -1,7 +1,6 @@
 package com.shopping.cart.service;
 
-import java.util.Set;
-
+import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.exception.CartNotAssociatedException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
@@ -12,7 +11,7 @@ import com.shopping.cart.exception.ProductDoesNotExistException;
  */
 public interface CartService {
 
-	public Set<CartItem> getCartItemList(Long cartId) throws CartNotAssociatedException;
+	public Cart getCartItemList(Long cartId) throws CartNotAssociatedException;
 
 	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException;
 

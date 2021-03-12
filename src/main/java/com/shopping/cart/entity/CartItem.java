@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -36,6 +37,9 @@ public class CartItem {
 	private Product product;
 
 	private int quantity;
+	
+	@Transient
+	private float subPrice;
 
 	/**
 	 * @return the id
@@ -93,8 +97,16 @@ public class CartItem {
 		this.quantity = quantity;
 	}
 
+	/**
+	 * @return the subPrice
+	 */
+	public float getSubPrice() {
+		return this.product.getPrice() * this.quantity;
+	}
+
 	@Override
 	public String toString() {
-		return "CartItem [id=" + id + ", cart=" + cart + ", product=" + product + ", quantity=" + quantity + "]";
+		return "CartItem [id=" + id + ", cart=" + cart + ", product=" + product + ", quantity=" + quantity
+				+ ", subPrice=" + subPrice + "]";
 	}
 }
