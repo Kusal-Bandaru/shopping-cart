@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,10 +33,10 @@ public class ProductController {
 		return productService.getAllProducts();
 	}
 
-	@GetMapping("/find/{id}")
-	@ApiOperation(value = "Find a product by name", httpMethod = "GET")
-	public Product getProductById(@PathVariable Long id) {
-		return productService.getProductById(id);
+	@GetMapping("/find")
+	@ApiOperation(value = "Find a product by name", httpMethod = "POST", consumes = "application/json")
+	public Product getProductById(@RequestBody Product product) {
+		return productService.getProductById(product);
 	}
 
 	@PostMapping("/new")

@@ -11,11 +11,11 @@ public interface Dao<T> {
 
 	List<T> getAll();
 
-	Optional<T> get(long id);
+	Optional<T> get(int id);
 
 	T save(T t);
 
 	T update(T t);
 
-	void delete(long id);
+	void delete(int id);
 }

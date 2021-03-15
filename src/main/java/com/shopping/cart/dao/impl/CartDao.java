@@ -27,7 +27,7 @@ public class CartDao implements Dao<Cart> {
 	}
 
 	@Override
-	public Optional<Cart> get(long id) {
+	public Optional<Cart> get(int id) {
 		return cartRepository.findById(id);
 	}
 
@@ -44,7 +44,7 @@ public class CartDao implements Dao<Cart> {
 	}
 
 	@Override
-	public void delete(long id) {
+	public void delete(int id) {
 		cartRepository.deleteById(id);
 	}
 

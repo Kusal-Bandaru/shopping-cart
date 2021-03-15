@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import com.shopping.cart.service.CartService;
 @Service
 @Transactional
 public class CartServiceImpl implements CartService {
+	
+	Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
 
 	@Autowired
 	CartDao cartDao;
@@ -35,10 +39,13 @@ public class CartServiceImpl implements CartService {
 	ProductRepository productRepository;
 
 	@Override
-	public Cart getCartItemList(Long cartId) throws CartNotAssociatedException {
+	public Cart getCartItemList(int cartId) throws CartNotAssociatedException {
+		logger.info("In cartSrvImpl {}", cartId);
 		Optional<Cart> cartOptional = cartDao.get(cartId);
+		logger.info("received cart optional {}", cartOptional);
 		if (cartOptional.isPresent()) {
 			Cart cart = cartOptional.get();
+			logger.info("received cart {}", cart);
 			return cart;
 		} else {
 			throw new CartNotAssociatedException("User is not associated to cart or Requested cart is not present.");
@@ -47,11 +54,19 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException {
+
 		Optional<Cart> cart = cartDao.get(cartItem.getCart().getId());
 		Optional<Product> product = productRepository.findById(cartItem.getProduct().getId());
 		if (cart.isPresent() && product.isPresent()) {
-			cartItem.setCart(cart.get());
-			cartItem.setProduct(product.get());
+			Optional<CartItem> existingCartItemOptional = cartItemDao.fetchIfItemExists(cart.get(), product.get());
+			if (existingCartItemOptional.isPresent()) {
+				CartItem existingCartItem = existingCartItemOptional.get();
+				existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+				return updateItem(existingCartItem);
+			} else {
+				cartItem.setCart(cart.get());
+				cartItem.setProduct(product.get());
+			}
 		} else if (!cart.isPresent()) {
 			throw new CartNotAssociatedException("User is not associated to cart or Requested cart is not present.");
 		} else {
@@ -66,7 +81,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public void deleteItem(Long itemId) {
+	public void deleteItem(int itemId) {
 		cartItemDao.delete(itemId);
 	}
 

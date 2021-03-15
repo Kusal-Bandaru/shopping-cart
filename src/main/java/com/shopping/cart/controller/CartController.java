@@ -39,7 +39,7 @@ public class CartController {
 
 	@GetMapping("/itemList/{cartId}")
 	@ApiOperation(value = "Get item list from the cart", httpMethod = "GET")
-	public ResponseEntity<Map<String, Object>> getCartItemList(@PathVariable Long cartId) {
+	public ResponseEntity<Map<String, Object>> getCartItemList(@PathVariable int cartId) {
 		return cartHandler.getCartItemList(cartId);
 	}
 
@@ -57,7 +57,7 @@ public class CartController {
 
 	@DeleteMapping("/deleteItem")
 	@ApiOperation(value = "Delete an existing item from the cart", httpMethod = "DELETE", consumes = "application/json")
-	public ResponseEntity<Map<String, Object>> deleteItem(@RequestParam Long itemId) {
+	public ResponseEntity<Map<String, Object>> deleteItem(@RequestParam int itemId) {
 		return cartHandler.deleteItem(itemId);
 	}
 }

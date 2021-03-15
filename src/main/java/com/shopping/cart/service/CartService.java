@@ -11,11 +11,11 @@ import com.shopping.cart.exception.ProductDoesNotExistException;
  */
 public interface CartService {
 
-	public Cart getCartItemList(Long cartId) throws CartNotAssociatedException;
+	public Cart getCartItemList(int cartId) throws CartNotAssociatedException;
 
 	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException;
 
 	public CartItem updateItem(CartItem cartItem);
 
-	public void deleteItem(Long itemId);
+	public void deleteItem(int itemId);
 }

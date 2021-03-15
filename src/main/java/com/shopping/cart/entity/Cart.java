@@ -23,7 +23,7 @@ public class Cart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
-	private long id;
+	private int id;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
@@ -31,21 +31,21 @@ public class Cart {
 
 	@OneToMany(mappedBy = "cart")
 	private Set<CartItem> cartItem;
-	
+
 	@Transient
 	private float totalPrice;
 
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -84,10 +84,9 @@ public class Cart {
 		return this.getCartItem().stream().map(CartItem::getSubPrice).reduce(0f, Float::sum);
 	}
 
-
 	@Override
 	public String toString() {
-		return "Cart [id=" + id + ", user=" + user + ", cartItem=" + cartItem + "]";
+		return "Cart [id=" + id + ", user=" + user + ", cartItem=" + cartItem + ", totalPrice=" + getTotalPrice() + "]";
 	}
 
 }

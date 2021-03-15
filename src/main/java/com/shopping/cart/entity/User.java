@@ -18,7 +18,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private long id;
+	private int id;
 
 	@Column(name = "user_name")
 	private String userName;
@@ -30,35 +30,16 @@ public class User {
 	private String lastName;
 
 	/**
-	 * default no-args constructor
-	 */
-	public User() {
-	}
-
-	/**
-	 * @param id
-	 * @param userName
-	 * @param firstName
-	 * @param lastName
-	 */
-	public User(long id, String userName, String firstName, String lastName) {
-		this.id = id;
-		this.userName = userName;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
-
-	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

@@ -20,12 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "cart_item")
+//@NamedQuery(name = "CartItem.fetchIfItemExists", query = "FROM CartItem ci WHERE ci.cart = :cart AND ci.product = :product")
 public class CartItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_item_id")
-	private long id;
+	private int id;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "cart_id", referencedColumnName = "cart_id")
@@ -37,21 +38,21 @@ public class CartItem {
 	private Product product;
 
 	private int quantity;
-	
+
 	@Transient
 	private float subPrice;
 
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -106,7 +107,8 @@ public class CartItem {
 
 	@Override
 	public String toString() {
-		return "CartItem [id=" + id + ", cart=" + cart + ", product=" + product + ", quantity=" + quantity
-				+ ", subPrice=" + subPrice + "]";
+		return "CartItem [id=" + id + ", cart_id=" + cart.getId() + ", product=" + product + ", quantity=" + quantity
+				+ ", subPrice=" + getSubPrice()+ "]";
 	}
+
 }

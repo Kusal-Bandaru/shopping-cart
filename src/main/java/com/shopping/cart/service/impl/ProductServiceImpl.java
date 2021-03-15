@@ -3,6 +3,8 @@ package com.shopping.cart.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import com.shopping.cart.service.ProductService;
  *
  */
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
@@ -24,10 +27,16 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findAll();
 	}
 
-	public Product getProductById(Long id) {
-
+	public Product getProductById(Product productRequest) {
 		Product product = null;
-		Optional<Product> productOptional = productRepository.findById(id);
+		Optional<Product> productOptional = null;
+		if(productRequest.getId() > 0) {
+			productOptional = productRepository.findById(productRequest.getId());
+//		}else if(productRequest.getName() != null) {
+//			productOptional = productRepository.findByName(productRequest.getName());
+//		}else if(productRequest.getCategory() != null) {
+//			productOptional = productRepository.findByCategory(productRequest.getCategory());
+		}
 		if (productOptional.isPresent()) {
 			product = productOptional.get();
 		}

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.shopping.cart.dao.Dao;
+import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
+import com.shopping.cart.entity.Product;
 import com.shopping.cart.repository.CartItemRepository;
 
 /**
@@ -30,7 +32,7 @@ public class CartItemDao implements Dao<CartItem> {
 	}
 
 	@Override
-	public Optional<CartItem> get(long id) {
+	public Optional<CartItem> get(int id) {
 		return cartItemRepository.findById(id);
 	}
 
@@ -47,8 +49,17 @@ public class CartItemDao implements Dao<CartItem> {
 	}
 
 	@Override
-	public void delete(long id) {
+	public void delete(int id) {
 		cartItemRepository.deleteById(id);
+	}
+
+	public Optional<CartItem> fetchIfItemExists(Cart cart, Product product) {
+//		List<CartItem> cartItemList = cartItemRepository.fetchIfItemExists(cart, product);
+		CartItem existingCartItem = null;
+//		if (!cartItemList.isEmpty()) {
+//			existingCartItem = cartItemList.get(0);
+//		}
+		return Optional.ofNullable(existingCartItem);
 	}
 
 }

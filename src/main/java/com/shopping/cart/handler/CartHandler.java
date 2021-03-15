@@ -6,6 +6,8 @@ package com.shopping.cart.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +27,18 @@ import com.shopping.cart.service.CartService;;
 @Component
 public class CartHandler {
 
+	Logger logger = LoggerFactory.getLogger(CartHandler.class);
+	
 	@Autowired
 	CartService cartService;
 
-	public ResponseEntity<Map<String, Object>> getCartItemList(long cartId) {
+	public ResponseEntity<Map<String, Object>> getCartItemList(int cartId) {
 		Map<String, Object> responseMap = new HashMap<>();
 		Cart cart;
 		try {
+			logger.info(">>>>>In Cart Handler");
 			cart = cartService.getCartItemList(cartId);
+			logger.info("received the cart {}", cart);
 			if (cart.getCartItem() != null && cart.getCartItem().size() > 0) {
 				responseMap.put(ResponseConstants.RESPONSE, cart);
 			} else {
@@ -41,6 +47,11 @@ public class CartHandler {
 		} catch (CartNotAssociatedException e) {
 			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.BAD_REQUEST);
+		} catch(Exception e) {
+			logger.error(">>> Exception in cartItemList {}", e.getMessage());
+			e.printStackTrace();
+			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
+			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
@@ -64,7 +75,7 @@ public class CartHandler {
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Map<String, Object>> deleteItem(long itemId) {
+	public ResponseEntity<Map<String, Object>> deleteItem(int itemId) {
 		Map<String, Object> responseMap = new HashMap<>();
 		cartService.deleteItem(itemId);
 		responseMap.put(ResponseConstants.RESPONSE, ResponseConstants.DELETE_ITEM_SUCCESS);
