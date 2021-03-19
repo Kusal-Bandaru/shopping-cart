@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Table(name = "cart_item")
 // Query to fetch the cart item based on product and cart
 @NamedQuery(name = "CartItem.fetchIfItemExists", query = "FROM CartItem ci WHERE ci.cart = :cart AND ci.product = :product")
-public class CartItem {
+public class CartItem implements Comparable<CartItem> {
 
 	/**
 	 * Primary key id
@@ -129,9 +129,54 @@ public class CartItem {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cart == null) ? 0 : cart.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((product == null) ? 0 : product.hashCode());
+		result = prime * result + quantity;
+		result = prime * result + Float.floatToIntBits(subPrice);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CartItem other = (CartItem) obj;
+		if (cart == null) {
+			if (other.cart != null)
+				return false;
+		} else if (!cart.equals(other.cart))
+			return false;
+		if (id != other.id)
+			return false;
+		if (product == null) {
+			if (other.product != null)
+				return false;
+		} else if (!product.equals(other.product))
+			return false;
+		if (quantity != other.quantity)
+			return false;
+		if (Float.floatToIntBits(subPrice) != Float.floatToIntBits(other.subPrice))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "CartItem [id=" + id + ", cartId=" + cart.getId() + ", productId=" + product + ", quantity=" + quantity
 				+ ", subPrice=" + getSubPrice() + "]";
+	}
+
+	@Override
+	public int compareTo(CartItem o) {
+		return Float.compare(this.getSubPrice(), o.getSubPrice());
 	}
 
 }

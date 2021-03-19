@@ -95,9 +95,48 @@ public class Apparel extends Product {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((brand == null) ? 0 : brand.hashCode());
+		result = prime * result + ((design == null) ? 0 : design.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Apparel other = (Apparel) obj;
+		if (brand == null) {
+			if (other.brand != null)
+				return false;
+		} else if (!brand.equals(other.brand))
+			return false;
+		if (design == null) {
+			if (other.design != null)
+				return false;
+		} else if (!design.equals(other.design))
+			return false;
+		if (id != other.id)
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "Apparel [id=" + id + ", type=" + type + ", brand=" + brand + ", design=" + design + "]";
 	}
-
 
 }

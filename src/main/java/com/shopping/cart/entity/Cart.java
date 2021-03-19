@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 @Entity
-public class Cart {
+public class Cart implements Comparable<Cart> {
 
 	/**
 	 * Primary key id
@@ -105,8 +105,44 @@ public class Cart {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + Float.floatToIntBits(totalPrice);
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cart other = (Cart) obj;
+		if (id != other.id)
+			return false;
+		if (Float.floatToIntBits(totalPrice) != Float.floatToIntBits(other.totalPrice))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "Cart [id=" + id + ", user=" + user + ", cartItem=" + cartItem + ", totalPrice=" + getTotalPrice() + "]";
+	}
+
+	@Override
+	public int compareTo(Cart o) {
+		return Float.compare(this.getTotalPrice(), o.getTotalPrice());
 	}
 
 }
