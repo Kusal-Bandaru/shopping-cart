@@ -38,6 +38,20 @@ public class Book extends Product {
 	private String publications;
 
 	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
 	 * @return the genre
 	 */
 	public String getGenre() {
@@ -81,7 +95,7 @@ public class Book extends Product {
 
 	@Override
 	public String toString() {
-		return "Book [genre=" + genre + ", author=" + author + ", publications=" + publications + "]";
+		return "Book [id=" + id + ", genre=" + genre + ", author=" + author + ", publications=" + publications + "]";
 	}
 
 }

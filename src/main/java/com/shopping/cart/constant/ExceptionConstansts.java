@@ -46,7 +46,8 @@ public class ExceptionConstansts {
 	 * Exception message when both cartItemId and cartId & productId are missing in
 	 * request
 	 */
-	public static final String CART_ITEM_UPDATE_MISSING_REQUEST = "Please provide either a valid CartItemId or valid CartId & ProductId to update the item";
+	public static final String CART_ITEM_UPDATE_MISSING_REQUEST = "Please provide either a valid CartItemId or valid CartId & ProductId "
+			+ "to update the item";
 
 	/**
 	 * Exception message when cart id is invalid for delete request
@@ -69,4 +70,17 @@ public class ExceptionConstansts {
 	 * fetch the products
 	 */
 	public static final String INVALID_PRODUCT_CATEGORY_IN_REQUEST = "Please enter a valid Product Category to fetch the product";
+
+	/**
+	 * Exception message when invalid quantity is provided in add cartItem request
+	 */
+	public static final String INVALID_QUANTITY_IN_ADD_REQUEST = "Invalid quantity in request. Please provide a valid quantity or "
+			+ "do not provide a value for quantity(single item will be added by default).";
+
+	/**
+	 * Exception message when invalid quantity is provided in update cartItem
+	 * request
+	 */
+	public static final String INVALID_QUANTITY_IN_UPDATE_REQUEST = "Please enter quantity greater than 0 to update the item. "
+			+ "Use delete if the quantity needs to be updated to 0";
 }

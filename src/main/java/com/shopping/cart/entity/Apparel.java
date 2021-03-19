@@ -39,6 +39,20 @@ public class Apparel extends Product {
 	private String design;
 
 	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
 	 * @return the type
 	 */
 	public String getType() {
@@ -82,7 +96,8 @@ public class Apparel extends Product {
 
 	@Override
 	public String toString() {
-		return "Apparel [type=" + type + ", brand=" + brand + ", design=" + design + "]";
+		return "Apparel [id=" + id + ", type=" + type + ", brand=" + brand + ", design=" + design + "]";
 	}
+
 
 }

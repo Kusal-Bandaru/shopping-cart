@@ -48,6 +48,10 @@ public class CartRequestValidator {
 		if (cartItemRequest.getProduct() == null || cartItemRequest.getProduct().getId() <= 0) {
 			throw new DataNotValidException(ExceptionConstansts.PRODUCT_MISSING_IN_CART_ITEM_REQUEST);
 		}
+		
+		if(cartItemRequest.getQuantity()<0) {
+			throw new DataNotValidException(ExceptionConstansts.INVALID_QUANTITY_IN_ADD_REQUEST);
+		}
 	}
 
 	/**
@@ -68,6 +72,10 @@ public class CartRequestValidator {
 					|| cartItemRequest.getProduct() == null || cartItemRequest.getProduct().getId() <= 0) {
 				throw new DataNotValidException(ExceptionConstansts.CART_ITEM_UPDATE_MISSING_REQUEST);
 			}
+		}
+		
+		if(cartItemRequest.getQuantity()<=0) {
+			throw new DataNotValidException(ExceptionConstansts.INVALID_QUANTITY_IN_UPDATE_REQUEST);
 		}
 	}
 
