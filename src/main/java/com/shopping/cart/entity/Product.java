@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author Kusal
  *
@@ -24,6 +26,7 @@ public class Product {
 	@Column(name = "product_name")
 	private String name;
 
+	@ApiModelProperty(required = false, hidden = true)
 	private float price;
 
 	private String category;

@@ -1,16 +1,15 @@
 package com.shopping.cart.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shopping.cart.entity.Product;
-import com.shopping.cart.service.ProductService;
+import com.shopping.cart.handler.ProductHandler;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,24 +24,29 @@ import io.swagger.annotations.ApiOperation;
 public class ProductController {
 
 	@Autowired
-	ProductService productService;
+	ProductHandler productHandler;
 
 	@GetMapping("/getAll")
 	@ApiOperation(value = "Get all product list", httpMethod = "GET") // API info for swagger
-	public List<Product> getAllProducts() {
-		return productService.getAllProducts();
+	public ResponseEntity<Map<String, Object>> getAllProducts() {
+		return productHandler.getAllProducts();
 	}
 
-	@GetMapping("/find")
-	@ApiOperation(value = "Find a product by name", httpMethod = "POST", consumes = "application/json")
-	public Product getProductById(@RequestBody Product product) {
-		return productService.getProductById(product);
+	@PostMapping("/findById")
+	@ApiOperation(value = "Find product by id", httpMethod = "POST")
+	public ResponseEntity<Map<String, Object>> getProductById(int id) {
+		return productHandler.getProductById(id);
 	}
 
-	@PostMapping("/new")
-	@ApiOperation(value = "Add a new product", httpMethod = "POST", consumes = "application/json")
-	public Product addProduct(@RequestBody Product product) {
-		return productService.saveProduct(product);
+	@PostMapping("/findByName")
+	@ApiOperation(value = "Find product by name", httpMethod = "POST")
+	public ResponseEntity<Map<String, Object>> findProductByName(String name) {
+		return productHandler.findProductByName(name);
 	}
 
+	@PostMapping("/findByCategory")
+	@ApiOperation(value = "Find product by category", httpMethod = "POST")
+	public ResponseEntity<Map<String, Object>> findProductByCategory(String category) {
+		return productHandler.findProductByCategory(category);
+	}
 }

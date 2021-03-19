@@ -6,6 +6,8 @@ package com.shopping.cart.dao.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,8 @@ import com.shopping.cart.repository.CartItemRepository;
  */
 @Component
 public class CartItemDao implements Dao<CartItem> {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CartItemDao.class);
 
 	@Autowired
 	CartItemRepository cartItemRepository;
@@ -44,7 +48,9 @@ public class CartItemDao implements Dao<CartItem> {
 	@Override
 	public CartItem update(CartItem cartItem) {
 		CartItem existingCartItem = cartItemRepository.getOne(cartItem.getId());
+		logger.info("Fetched existingCartItem - {}", existingCartItem);
 		BeanUtils.copyProperties(cartItem, existingCartItem, "id");
+		logger.info("updated existingCartItem - {}", existingCartItem);
 		return cartItemRepository.save(existingCartItem);
 	}
 
@@ -54,11 +60,11 @@ public class CartItemDao implements Dao<CartItem> {
 	}
 
 	public Optional<CartItem> fetchIfItemExists(Cart cart, Product product) {
-//		List<CartItem> cartItemList = cartItemRepository.fetchIfItemExists(cart, product);
+		List<CartItem> cartItemList = cartItemRepository.fetchIfItemExists(cart, product);
 		CartItem existingCartItem = null;
-//		if (!cartItemList.isEmpty()) {
-//			existingCartItem = cartItemList.get(0);
-//		}
+		if (!cartItemList.isEmpty()) {
+			existingCartItem = cartItemList.get(0);
+		}
 		return Optional.ofNullable(existingCartItem);
 	}
 

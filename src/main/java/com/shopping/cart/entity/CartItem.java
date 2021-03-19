@@ -8,11 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author Kusal
@@ -20,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "cart_item")
-//@NamedQuery(name = "CartItem.fetchIfItemExists", query = "FROM CartItem ci WHERE ci.cart = :cart AND ci.product = :product")
+@NamedQuery(name = "CartItem.fetchIfItemExists", query = "FROM CartItem ci WHERE ci.cart = :cart AND ci.product = :product")
 public class CartItem {
 
 	@Id
@@ -28,18 +32,19 @@ public class CartItem {
 	@Column(name = "cart_item_id")
 	private int id;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST )
 	@JoinColumn(name = "cart_id", referencedColumnName = "cart_id")
-	@JsonIgnore
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private Cart cart;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "product_id", referencedColumnName = "product_id")
 	private Product product;
 
 	private int quantity;
 
 	@Transient
+	@ApiModelProperty(required = false, hidden = true)
 	private float subPrice;
 
 	/**
@@ -108,7 +113,8 @@ public class CartItem {
 	@Override
 	public String toString() {
 		return "CartItem [id=" + id + ", cart_id=" + cart.getId() + ", product=" + product + ", quantity=" + quantity
-				+ ", subPrice=" + getSubPrice()+ "]";
+				+ ", subPrice=" + getSubPrice() + "]";
+
 	}
 
 }

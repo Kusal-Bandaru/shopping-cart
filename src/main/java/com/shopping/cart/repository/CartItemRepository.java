@@ -16,5 +16,5 @@ import com.shopping.cart.entity.Product;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
 
-//	List<CartItem> fetchIfItemExists(Cart cart, Product product);
+	List<CartItem> fetchIfItemExists(Cart cart, Product product);
 }

@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author Kusal
  *
@@ -25,14 +27,17 @@ public class Cart {
 	@Column(name = "cart_id")
 	private int id;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	@ApiModelProperty(required = false, hidden = true)
 	private User user;
 
 	@OneToMany(mappedBy = "cart")
+	@ApiModelProperty(required = false, hidden = true)
 	private Set<CartItem> cartItem;
 
 	@Transient
+	@ApiModelProperty(required = false, hidden = true)
 	private float totalPrice;
 
 	/**
@@ -81,6 +86,9 @@ public class Cart {
 	 * @return the totalPrice
 	 */
 	public float getTotalPrice() {
+		if(this.cartItem == null) {
+			return 0f;
+		}
 		return this.getCartItem().stream().map(CartItem::getSubPrice).reduce(0f, Float::sum);
 	}
 

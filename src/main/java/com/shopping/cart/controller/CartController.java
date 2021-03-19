@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shopping.cart.entity.CartItem;
@@ -57,7 +56,7 @@ public class CartController {
 
 	@DeleteMapping("/deleteItem")
 	@ApiOperation(value = "Delete an existing item from the cart", httpMethod = "DELETE", consumes = "application/json")
-	public ResponseEntity<Map<String, Object>> deleteItem(@RequestParam int itemId) {
+	public ResponseEntity<Map<String, Object>> deleteItem(int itemId) {
 		return cartHandler.deleteItem(itemId);
 	}
 }

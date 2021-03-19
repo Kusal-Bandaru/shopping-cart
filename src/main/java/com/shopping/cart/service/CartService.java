@@ -2,6 +2,7 @@ package com.shopping.cart.service;
 
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
+import com.shopping.cart.exception.CartItemDoesNotExistException;
 import com.shopping.cart.exception.CartNotAssociatedException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
 
@@ -15,7 +16,8 @@ public interface CartService {
 
 	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException;
 
-	public CartItem updateItem(CartItem cartItem);
+	public CartItem updateItem(CartItem cartItem)
+			throws CartNotAssociatedException, ProductDoesNotExistException, CartItemDoesNotExistException;
 
 	public void deleteItem(int itemId);
 }
