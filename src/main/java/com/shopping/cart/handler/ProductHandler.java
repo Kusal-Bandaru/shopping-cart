@@ -14,88 +14,154 @@ import org.springframework.stereotype.Component;
 
 import com.shopping.cart.constant.ResponseConstants;
 import com.shopping.cart.entity.Product;
+import com.shopping.cart.exception.DataNotValidException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
 import com.shopping.cart.service.ProductService;
+import com.shopping.cart.validator.ProductRequestValidator;
 
 /**
+ * CartHandler class to handle the requests and response to cart operations.
+ * 
  * @author Kusal
  *
  */
 @Component
 public class ProductHandler {
 
-	public static Logger logger = LoggerFactory.getLogger(ProductHandler.class);
-	
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ProductHandler.class);
+
+	/**
+	 * Autowiring ProductService dependency for consumption
+	 */
 	@Autowired
 	private ProductService productService;
-	
-	public  ResponseEntity<Map<String, Object>> getAllProducts() {
+
+	/**
+	 * Validator class to verify the requests
+	 */
+	@Autowired
+	private ProductRequestValidator productRequestValidator;
+
+	/**
+	 * Get all the product list
+	 * 
+	 * @return ResponseEntity
+	 */
+	public ResponseEntity<Map<String, Object>> getAllProducts() {
+		logger.info("Received a request to getAllProducts");
 		Map<String, Object> responseMap = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 		try {
-			productList =  productService.getAllProducts();
+			productList = productService.getAllProducts();
 			responseMap.put(ResponseConstants.RESPONSE, productList);
 		} catch (Exception e) {
-			logger.error("Exception in ProductHandler::getAllProducts - {}", e.getMessage());
+			logger.error("Exception occurred in ProductHandler::getAllProducts - Message {}", e.getMessage());
 			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		logger.info("Fetched the Product list successfully");
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
 
+	/**
+	 * Get a product by id
+	 * 
+	 * @param id
+	 * @return ResponseEntity
+	 */
 	public ResponseEntity<Map<String, Object>> getProductById(int id) {
+		logger.info("Received request to fetch the Product by id = {}", id);
 		Map<String, Object> responseMap = new HashMap<>();
 		Product product;
 		try {
-			product =  productService.getProductById(id);
+			productRequestValidator.validateGetProductByIdRequest(id);
+			product = productService.getProductById(id);
 			responseMap.put(ResponseConstants.RESPONSE, product);
-		} catch (ProductDoesNotExistException e) {
-			logger.error("ProductDoesNotExistException in ProductHandler::getProductById - {}", e.getMessage());
-			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
+		} catch (DataNotValidException de) {
+			logger.error("DataNotValidException occurred in ProductHandler::getProductById. Message - {}",
+					de.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, de.getMessage());
+			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.BAD_REQUEST);
+		} catch (ProductDoesNotExistException pe) {
+			logger.error("ProductDoesNotExistException in ProductHandler::getProductById. Message - {}",
+					pe.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, pe.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.PRECONDITION_FAILED);
 		} catch (Exception e) {
 			logger.error("Exception in ProductHandler::getProductById - {}", e.getMessage());
 			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		logger.info("Fetched product successfully for id = {}", id);
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Map<String, Object>> findProductByName(String name){
+	/**
+	 * Get a product list by name
+	 * 
+	 * @param name
+	 * @return ResponseEntity
+	 */
+	public ResponseEntity<Map<String, Object>> findProductByName(String name) {
 		logger.info("Received request to findProductByName - {}", name);
 		Map<String, Object> responseMap = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 		try {
-			productList =  productService.findProductByName(name);
+			productRequestValidator.validateGetProductByNameRequest(name);
+			productList = productService.findProductByName(name);
 			responseMap.put(ResponseConstants.RESPONSE, productList);
-		} catch (ProductDoesNotExistException e) {
-			logger.error("ProductDoesNotExistException in ProductHandler::findProductByName - {}", e.getMessage());
-			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
+		} catch (DataNotValidException de) {
+			logger.error("DataNotValidException occurred in ProductHandler::findProductByName. Message - {}",
+					de.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, de.getMessage());
+			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.BAD_REQUEST);
+		} catch (ProductDoesNotExistException pe) {
+			logger.error("ProductDoesNotExistException in ProductHandler::findProductByName. Message - {}",
+					pe.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, pe.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.PRECONDITION_FAILED);
 		} catch (Exception e) {
-			logger.error("Exception in ProductHandler::findProductByCategory - {}", e.getMessage());
+			logger.error("Exception in ProductHandler::findProductByCategory. Message - {}", e.getMessage());
 			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		logger.info("Fetched the product successfully by name - {}", name);
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
-	
-	public ResponseEntity<Map<String, Object>> findProductByCategory(String category){
+
+	/**
+	 * Get product list by category
+	 * 
+	 * @param category
+	 * @return ResponseEntity
+	 */
+	public ResponseEntity<Map<String, Object>> findProductByCategory(String category) {
 		logger.info("Received request to findProductByCategory - {}", category);
 		Map<String, Object> responseMap = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 		try {
-			productList =  productService.findProductByCategory(category);
+			productRequestValidator.validateGetProductByCategoryRequest(category);
+			productList = productService.findProductByCategory(category);
 			responseMap.put(ResponseConstants.RESPONSE, productList);
-		} catch (ProductDoesNotExistException e) {
-			logger.error("ProductDoesNotExistException in ProductHandler::findProductByCategory - {}", e.getMessage());
-			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
+		} catch (DataNotValidException de) {
+			logger.error("DataNotValidException occurred in ProductHandler::findProductByCategory. Message - {}",
+					de.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, de.getMessage());
+			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.BAD_REQUEST);
+		} catch (ProductDoesNotExistException pe) {
+			logger.error("ProductDoesNotExistException in ProductHandler::findProductByCategory. Message - {}",
+					pe.getMessage());
+			responseMap.put(ResponseConstants.RESPONSE, pe.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.PRECONDITION_FAILED);
 		} catch (Exception e) {
-			logger.error("Exception in ProductHandler::findProductByCategory - {}", e.getMessage());
+			logger.error("Exception in ProductHandler::findProductByCategory. Message - {}", e.getMessage());
 			responseMap.put(ResponseConstants.RESPONSE, e.getMessage());
 			return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		logger.info("Fetched the product successfully by category - {}", category);
 		return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
 	}
 }

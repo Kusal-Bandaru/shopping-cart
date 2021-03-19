@@ -4,24 +4,24 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopping.cart.constant.ExceptionConstansts;
 import com.shopping.cart.dao.impl.CartDao;
 import com.shopping.cart.dao.impl.CartItemDao;
+import com.shopping.cart.dao.impl.ProductDao;
 import com.shopping.cart.entity.Cart;
 import com.shopping.cart.entity.CartItem;
 import com.shopping.cart.entity.Product;
 import com.shopping.cart.exception.CartItemDoesNotExistException;
 import com.shopping.cart.exception.CartNotAssociatedException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
-import com.shopping.cart.repository.ProductRepository;
 import com.shopping.cart.service.CartService;
 
 /**
+ * CartServiceImpl class contains business logic for operations on the cart.
+ * 
  * @author Kusal
  *
  */
@@ -29,8 +29,9 @@ import com.shopping.cart.service.CartService;
 @Transactional
 public class CartServiceImpl implements CartService {
 
-	Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
-
+	/**
+	 * Autowiring Dao dependencies to perform DB operations
+	 */
 	@Autowired
 	CartDao cartDao;
 
@@ -38,37 +39,49 @@ public class CartServiceImpl implements CartService {
 	CartItemDao cartItemDao;
 
 	@Autowired
-	ProductRepository productRepository;
+	ProductDao productDao;
 
+	/**
+	 * Get the cart items list based on cart id.
+	 * 
+	 * @param cartId
+	 * @return Cart
+	 * @throws CartNotAssociatedException
+	 */
 	@Override
 	public Cart getCartItemList(int cartId) throws CartNotAssociatedException {
-		logger.info("In cartSrvImpl {}", cartId);
 		Optional<Cart> cartOptional = cartDao.get(cartId);
-		logger.info("received cart optional {}", cartOptional);
 		if (cartOptional.isPresent()) {
 			Cart cart = cartOptional.get();
-			logger.info("received cart {}", cart);
 			return cart;
 		} else {
 			throw new CartNotAssociatedException(ExceptionConstansts.CART_MISSING);
 		}
 	}
 
+	/**
+	 * Add an item to the cart
+	 * 
+	 * @param cartItem
+	 * @return CartItem
+	 * @throws CartNotAssociatedException
+	 * @throws ProductDoesNotExistException
+	 */
 	@Override
 	public CartItem addItem(CartItem cartItem) throws CartNotAssociatedException, ProductDoesNotExistException {
-		logger.info("Received request to add cartItem: {}", cartItem);
 		Optional<Cart> cart = cartDao.get(cartItem.getCart().getId());
-		Optional<Product> product = productRepository.findById(cartItem.getProduct().getId());
+		Optional<Product> product = productDao.get(cartItem.getProduct().getId());
 		if (cart.isPresent() && product.isPresent()) {
 			Optional<CartItem> existingCartItemOptional = cartItemDao.fetchIfItemExists(cart.get(), product.get());
-			if (existingCartItemOptional.isPresent()) {
+			if (existingCartItemOptional.isPresent()) { // checking if cartItem to add is already present in the cart
 				CartItem existingCartItem = existingCartItemOptional.get();
-				existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+				existingCartItem.setQuantity(existingCartItem.getQuantity() + 1); // incrementing quantity for existing
+																					// items
 				return cartItemDao.update(existingCartItem);
 			} else {
 				cartItem.setCart(cart.get());
 				cartItem.setProduct(product.get());
-				if (cartItem.getQuantity() == 0)
+				if (cartItem.getQuantity() == 0) // setting the quantity to 1 for new items
 					cartItem.setQuantity(1);
 			}
 		} else if (!cart.isPresent()) {
@@ -79,13 +92,22 @@ public class CartServiceImpl implements CartService {
 		return cartItemDao.save(cartItem);
 	}
 
+	/**
+	 * Update an existing item in the cart
+	 * 
+	 * @param cartItem
+	 * @return CartItem
+	 * @throws CartNotAssociatedException
+	 * @throws ProductDoesNotExistException
+	 * @throws CartItemDoesNotExistException
+	 */
 	@Override
 	public CartItem updateItem(CartItem cartItem)
 			throws CartNotAssociatedException, ProductDoesNotExistException, CartItemDoesNotExistException {
 		CartItem existingCartItem = null;
 		if (cartItem.getId() == 0) {
 			Optional<Cart> cart = cartDao.get(cartItem.getCart().getId());
-			Optional<Product> product = productRepository.findById(cartItem.getProduct().getId());
+			Optional<Product> product = productDao.get(cartItem.getProduct().getId());
 			if (cart.isPresent() && product.isPresent()) {
 				Optional<CartItem> existingCartItemOptional = cartItemDao.fetchIfItemExists(cart.get(), product.get());
 				if (existingCartItemOptional.isPresent()) {
@@ -112,6 +134,11 @@ public class CartServiceImpl implements CartService {
 		return cartItemDao.update(existingCartItem);
 	}
 
+	/**
+	 * Delete an item from the cart
+	 * 
+	 * @param itemId
+	 */
 	@Override
 	public void deleteItem(int itemId) {
 		cartItemDao.delete(itemId);

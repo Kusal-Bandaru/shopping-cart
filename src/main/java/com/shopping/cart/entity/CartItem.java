@@ -19,30 +19,48 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
+ * Entity class for Cart items
+ * 
  * @author Kusal
  *
  */
 @Entity
 @Table(name = "cart_item")
+// Query to fetch the cart item based on product and cart
 @NamedQuery(name = "CartItem.fetchIfItemExists", query = "FROM CartItem ci WHERE ci.cart = :cart AND ci.product = :product")
 public class CartItem {
 
+	/**
+	 * Primary key id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_item_id")
 	private int id;
 
-	@ManyToOne(cascade = CascadeType.PERSIST )
+	/**
+	 * Cart entity that is associated with this cartItem
+	 */
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "cart_id", referencedColumnName = "cart_id")
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Cart cart;
 
+	/**
+	 * Product entity that is associated with this cartItem
+	 */
 	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "product_id", referencedColumnName = "product_id")
 	private Product product;
 
+	/**
+	 * quantity of the product in the cartItem
+	 */
 	private int quantity;
 
+	/**
+	 * Subprice for this cartItem alone
+	 */
 	@Transient
 	@ApiModelProperty(required = false, hidden = true)
 	private float subPrice;
@@ -114,7 +132,6 @@ public class CartItem {
 	public String toString() {
 		return "CartItem [id=" + id + ", cartId=" + cart.getId() + ", productId=" + product + ", quantity=" + quantity
 				+ ", subPrice=" + getSubPrice() + "]";
-
 	}
 
 }

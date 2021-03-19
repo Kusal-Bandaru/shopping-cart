@@ -6,10 +6,12 @@ import org.springframework.stereotype.Repository;
 import com.shopping.cart.entity.Cart;
 
 /**
+ * CartRepository for operations on Cart entities in DB
+ * 
  * @author Kusal
  *
  */
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Integer>{
+public interface CartRepository extends JpaRepository<Cart, Integer> {
 
 }

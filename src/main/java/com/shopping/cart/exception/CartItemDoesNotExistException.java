@@ -6,8 +6,6 @@ package com.shopping.cart.exception;
  */
 public class CartItemDoesNotExistException extends Exception {
 
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * @param message
 	 */

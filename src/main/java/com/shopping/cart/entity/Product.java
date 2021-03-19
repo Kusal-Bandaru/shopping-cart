@@ -11,6 +11,9 @@ import javax.persistence.InheritanceType;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
+ * Product entity, super class for all the product types. Follows Joined
+ * inheritance strategy
+ * 
  * @author Kusal
  *
  */
@@ -18,17 +21,29 @@ import io.swagger.annotations.ApiModelProperty;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
 
+	/**
+	 * Primary key id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "product_id")
 	private int id;
 
+	/**
+	 * Name of the product
+	 */
 	@Column(name = "product_name")
 	private String name;
 
+	/**
+	 * price of the product
+	 */
 	@ApiModelProperty(required = false, hidden = true)
 	private float price;
 
+	/**
+	 * category of the product
+	 */
 	private String category;
 
 	/**

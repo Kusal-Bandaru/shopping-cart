@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
+ * Entity class for User details
+ * 
  * @author Kusal
  *
  */
@@ -15,17 +17,29 @@ import javax.persistence.Table;
 @Table(name = "user_details")
 public class User {
 
+	/**
+	 * Primary key Id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private int id;
 
+	/**
+	 * UserName of the user
+	 */
 	@Column(name = "user_name")
 	private String userName;
 
+	/**
+	 * First name of the user
+	 */
 	@Column(name = "first_name")
 	private String firstName;
 
+	/**
+	 * Last name of the user
+	 */
 	@Column(name = "last_name")
 	private String lastName;
 

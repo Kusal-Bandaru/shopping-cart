@@ -16,26 +16,40 @@ import javax.persistence.Transient;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
+ * Entity class for Cart/ Shopping cart
+ * 
  * @author Kusal
  *
  */
 @Entity
 public class Cart {
 
+	/**
+	 * Primary key id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "cart_id")
 	private int id;
 
+	/**
+	 * User entity that is associated with this cart
+	 */
 	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
 	@ApiModelProperty(required = false, hidden = true)
 	private User user;
 
+	/**
+	 * Set of Cartitems present in the cart
+	 */
 	@OneToMany(mappedBy = "cart")
 	@ApiModelProperty(required = false, hidden = true)
 	private Set<CartItem> cartItem;
 
+	/**
+	 * Total price of all the items present in the cart
+	 */
 	@Transient
 	@ApiModelProperty(required = false, hidden = true)
 	private float totalPrice;
@@ -86,10 +100,8 @@ public class Cart {
 	 * @return the totalPrice
 	 */
 	public float getTotalPrice() {
-		if(this.cartItem == null) {
-			return 0f;
-		}
-		return this.getCartItem().stream().map(CartItem::getSubPrice).reduce(0f, Float::sum);
+		return this.cartItem == null ? 0f
+				: this.getCartItem().stream().map(CartItem::getSubPrice).reduce(0f, Float::sum);
 	}
 
 	@Override

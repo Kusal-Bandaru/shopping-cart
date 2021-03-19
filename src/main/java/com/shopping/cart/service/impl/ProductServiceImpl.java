@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +15,39 @@ import com.shopping.cart.exception.ProductDoesNotExistException;
 import com.shopping.cart.service.ProductService;
 
 /**
+ * ProductServiceImpl class contains business logic for operations on the
+ * product.
+ * 
  * @author Kusal
  *
  */
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
+	/**
+	 * Autowiring Dao dependencies to perform DB operations
+	 */
 	@Autowired
 	ProductDao productDao;
 
+	/**
+	 * Get all the product list
+	 * 
+	 * @return List<Product>
+	 */
 	@Override
 	public List<Product> getAllProducts() {
 		return productDao.getAll();
 	}
 
+	/**
+	 * Fetch a product by id
+	 * 
+	 * @param id
+	 * @return Product
+	 * @throws ProductDoesNotExistException
+	 */
 	@Override
 	public Product getProductById(int id) throws ProductDoesNotExistException {
 		Optional<Product> productOptional = productDao.get(id);
@@ -44,11 +58,17 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	/**
+	 * Fetch product list by name
+	 * 
+	 * @param name
+	 * @return List<Product>
+	 * @throws ProductDoesNotExistException
+	 */
 	@Override
 	public List<Product> findProductByName(String name) throws ProductDoesNotExistException {
-		
+
 		List<Product> productList = productDao.findByName(name);
-		logger.info("Fetched product list from DB by name - {}, productList - {}", name, productList);
 		if (productList != null && !productList.isEmpty()) {
 			return productList;
 		} else {
@@ -56,6 +76,13 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	/**
+	 * Fetch product list by category
+	 * 
+	 * @param category
+	 * @return List<Product>
+	 * @throws ProductDoesNotExistException
+	 */
 	@Override
 	public List<Product> findProductByCategory(String category) throws ProductDoesNotExistException {
 		List<Product> productList = productDao.findByCategory(category);
