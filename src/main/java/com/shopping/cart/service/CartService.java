@@ -7,6 +7,8 @@ import com.shopping.cart.exception.CartNotAssociatedException;
 import com.shopping.cart.exception.ProductDoesNotExistException;
 
 /**
+ * CartService Interface for business logic related to cart operations
+ * 
  * @author Kusal
  *
  */
